@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{% block title %}RangAura – Where Colors Find Their Home{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=Cinzel:wght@400;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- ══ NAVBAR ════════════════════════════════════════════════ -->
+<nav id="main-nav">
+  <a href="{% url 'home' %}" class="nav-logo">
+    <div class="brush-icon">🎨</div>
+    <span class="rang">Rang</span><span class="aura">Aura</span>
+  </a>
+
+  <button class="nav-burger" id="navBurger" aria-label="Toggle menu">☰</button>
+
+  <ul id="navMenu">
+    <li><a href="{% url 'home' %}#about">About</a></li>
+    <li><a href="{% url 'home' %}#features">Features</a></li>
+    <li><a href="{% url 'gallery' %}">Gallery</a></li>
+    <li><a href="{% url 'home' %}#audience">For You</a></li>
+    {% if user.is_authenticated %}
+      <li><a href="{% url 'request_painting' %}" class="nav-highlight">🖌️ Request Painting</a></li>
+      <li class="nav-user-menu">
+        <span class="nav-username">👤 {{ user.username }}</span>
+        <div class="nav-dropdown">
+          <a href="{% url 'dashboard' %}">📊 My Dashboard</a>
+          <form method="post" action="{% url 'logout' %}" style="margin:0">
+            {% csrf_token %}
+            <button type="submit" class="dropdown-logout">🚪 Logout</button>
+          </form>
+        </div>
+      </li>
+    {% else %}
+      <li><a href="{% url 'login' %}">Login</a></li>
+      <li><a href="{% url 'register' %}" class="nav-cta">Get Started</a></li>
+    {% endif %}
+  </ul>
+</nav>
+
+<!-- ══ DJANGO MESSAGES ═══════════════════════════════════════ -->
+{% if messages %}
+<div class="ra-messages" id="raMessages">
+  {% for message in messages %}
+  <div class="ra-alert ra-alert-{{ message.tags }}">
+    <span class="alert-icon">
+      {% if message.tags == 'success' %}✅
+      {% elif message.tags == 'error' %}❌
+      {% elif message.tags == 'warning' %}⚠️
+      {% else %}ℹ️{% endif %}
+    </span>
+    <span class="alert-text">{{ message }}</span>
+    <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ══ PAGE CONTENT ══════════════════════════════════════════ -->
+{% block content %}{% endblock %}
+
+<!-- ══ FOOTER ════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <span class="footer-logo">RangAura</span>
+      <p>Where Colors Find Their Home.<br/>Connecting artists with collectors since 2025.</p>
+    </div>
+    <div class="footer-links-group">
+      <h4>Explore</h4>
+      <a href="{% url 'gallery' %}">Gallery</a>
+      <a href="{% url 'home' %}#features">Features</a>
+      <a href="{% url 'home' %}#audience">For Artists</a>
+      <a href="{% url 'home' %}#contact">Contact</a>
+    </div>
+    <div class="footer-links-group">
+      <h4>Account</h4>
+      {% if user.is_authenticated %}
+        <a href="{% url 'dashboard' %}">My Dashboard</a>
+        <a href="{% url 'request_painting' %}">Request Painting</a>
+      {% else %}
+        <a href="{% url 'register' %}">Register</a>
+        <a href="{% url 'login' %}">Login</a>
+      {% endif %}
+      <a href="/admin/">Admin Panel</a>
+    </div>
+    <div class="footer-links-group">
+      <h4>Contact</h4>
+      <p style="color:rgba(240,232,245,0.5);font-size:0.85rem;line-height:1.6;">
+        📍 Vasai Panchavati, Mumbai<br/>
+        Maharashtra, India<br/>
+        🎨 Karan Rana · Shubham Lawate
+      </p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 RangAura. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="{% url 'home' %}">Home</a>
+      <a href="{% url 'gallery' %}">Gallery</a>
+      <a href="{% url 'home' %}#contact">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

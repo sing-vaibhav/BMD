@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gallery – RangAura{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-content">
+    <span class="section-tag">Our Collection</span>
+    <h1 class="section-title">Explore the Gallery</h1>
+    <p class="section-sub">Hand-drawn paintings across Fantasy, Digital, Modern, and more styles.</p>
+  </div>
+</div>
+
+<section style="padding:60px;">
+
+  <!-- Search + Filter Bar -->
+  <div class="gallery-controls">
+    <form method="GET" action="{% url 'gallery' %}" class="gallery-search-form">
+      <div class="search-bar">
+        <span>🔍</span>
+        <input type="text" name="q" value="{{ search_query }}" placeholder="Search paintings, artists..." class="search-input"/>
+        <button type="submit" class="btn-primary" style="padding:10px 24px;font-size:0.9rem;">Search</button>
+      </div>
+      <div class="filter-chips">
+        <a href="{% url 'gallery' %}" class="chip {% if not active_style %}chip-active{% endif %}">All Styles</a>
+        {% for value, label in style_choices %}
+        <a href="{% url 'gallery' %}?style={{ value }}{% if search_query %}&q={{ search_query }}{% endif %}"
+           class="chip {% if active_style == value %}chip-active{% endif %}">{{ label }}</a>
+        {% endfor %}
+      </div>
+    </form>
+  </div>
+
+  <!-- Results count -->
+  <p style="color:rgba(240,232,245,0.4);font-size:0.85rem;margin-bottom:32px;">
+    Showing <strong style="color:var(--orange)">{{ paintings|length }}</strong> painting{{ paintings|length|pluralize }}
+    {% if active_style %}in <strong style="color:var(--pink)">{{ active_style }}</strong>{% endif %}
+    {% if search_query %}matching <strong style="color:var(--gold)">"{{ search_query }}"</strong>{% endif %}
+  </p>
+
+  <!-- Paintings Grid -->
+  {% if paintings %}
+  <div class="full-gallery-grid">
+    {% for painting in paintings %}
+    <a href="{% url 'painting_detail' painting.pk %}" class="full-g-card" style="text-decoration:none;">
+      <div class="full-g-img">
+        {% if painting.image %}
+          <img src="{{ painting.image.url }}" alt="{{ painting.title }}"/>
+        {% else %}
+          <div class="full-g-emoji">{{ painting.emoji }}</div>
+        {% endif %}
+        {% if painting.is_featured %}
+          <div class="featured-badge">⭐ Featured</div>
+        {% endif %}
+      </div>
+      <div class="full-g-info">
+        <div class="full-g-style">{{ painting.style_label }}</div>
+        <h3 class="full-g-title">{{ painting.title }}</h3>
+        <p class="full-g-artist">by {{ painting.artist_name }}</p>
+        <div class="full-g-footer">
+          <span class="full-g-price">₹{{ painting.price }}</span>
+          <div class="aura-score-mini">
+            <span>✦</span> Aura {{ painting.aura_total }}
+          </div>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🎨</div>
+    <h3>No Paintings Found</h3>
+    <p>Try changing your filters or search query.</p>
+    <a href="{% url 'gallery' %}" class="btn-primary" style="margin-top:20px;">Clear Filters</a>
+  </div>
+  {% endif %}
+
+  <!-- Custom Painting CTA -->
+  <div class="gallery-cta-banner">
+    <div>
+      <h3>Don't see what you want?</h3>
+      <p>Commission a custom painting made just for you.</p>
+    </div>
+    {% if user.is_authenticated %}
+      <a href="{% url 'request_painting' %}" class="btn-primary">🖌️ Request Custom Painting</a>
+    {% else %}
+      <a href="{% url 'register' %}" class="btn-primary">Join Free & Request →</a>
+    {% endif %}
+  </div>
+
+</section>
+{% endblock %}

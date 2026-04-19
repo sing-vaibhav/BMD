@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register – RangAura{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="splash splash-1" style="opacity:0.15;top:-50px;right:5%;"></div>
+  <div class="splash splash-2" style="opacity:0.1;bottom:5%;left:2%;"></div>
+
+  <div class="form-container">
+    <div class="form-header">
+      <div class="form-icon">🎨</div>
+      <h1>Join RangAura</h1>
+      <p>Create your account and start your art journey today.</p>
+    </div>
+
+    <form method="POST" id="registerForm" novalidate>
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+          <div class="field-error">{{ form.username.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.email.id_for_label }}">Email Address</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+          <div class="field-error">{{ form.email.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Password</label>
+        <div class="password-wrap">
+          {{ form.password1 }}
+          <button type="button" class="toggle-pw" onclick="togglePw('id_password1', this)">👁️</button>
+        </div>
+        {% if form.password1.errors %}
+          <div class="field-error">{{ form.password1.errors.0 }}</div>
+        {% endif %}
+        <div id="pw-strength" class="pw-strength" style="display:none;">
+          <div class="pw-strength-bar"><div id="pw-fill" class="pw-strength-fill"></div></div>
+          <span id="pw-label">Weak</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+        <div class="password-wrap">
+          {{ form.password2 }}
+          <button type="button" class="toggle-pw" onclick="togglePw('id_password2', this)">👁️</button>
+        </div>
+        {% if form.password2.errors %}
+          <div class="field-error">{{ form.password2.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      {% if form.non_field_errors %}
+      <div class="form-error-box">
+        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+      </div>
+      {% endif %}
+
+      <button type="submit" class="btn-primary btn-full" id="regBtn">
+        <span class="btn-text">✨ Create Account</span>
+        <span class="btn-loading" style="display:none;">Creating…</span>
+      </button>
+    </form>
+
+    <div class="form-switch">
+      Already have an account? <a href="{% url 'login' %}">Login here →</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePw(id, btn) {
+  const inp = document.getElementById(id);
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁️'; }
+}
+
+// Password strength
+const pw1 = document.getElementById('id_password1');
+const pwFill = document.getElementById('pw-fill');
+const pwLabel = document.getElementById('pw-label');
+const pwStrength = document.getElementById('pw-strength');
+
+pw1.addEventListener('input', function() {
+  const val = this.value;
+  if (!val) { pwStrength.style.display = 'none'; return; }
+  pwStrength.style.display = 'flex';
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const levels = ['Weak', 'Fair', 'Good', 'Strong'];
+  const colors = ['#ef4444', '#f47c20', '#e8c96a', '#22c55e'];
+  const widths = ['25%', '50%', '75%', '100%'];
+  pwFill.style.width = widths[score - 1] || '10%';
+  pwFill.style.background = colors[score - 1] || '#ef4444';
+  pwLabel.textContent = levels[score - 1] || 'Weak';
+  pwLabel.style.color = colors[score - 1] || '#ef4444';
+});
+
+document.getElementById('registerForm').addEventListener('submit', function() {
+  const btn = document.getElementById('regBtn');
+  btn.querySelector('.btn-text').style.display = 'none';
+  btn.querySelector('.btn-loading').style.display = 'inline';
+  btn.disabled = true;
+});
+</script>
+{% endblock %}

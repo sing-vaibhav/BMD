@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Dashboard – RangAura{% endblock %}
+
+{% block content %}
+<div style="padding:110px 60px 80px;max-width:1200px;margin:0 auto;">
+
+  <!-- Header -->
+  <div class="dash-header">
+    <div>
+      <span class="section-tag">My Account</span>
+      <h1 class="section-title">Welcome back, <em style="font-style:italic;background:var(--grad2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{{ user.username }}</em> 🎨</h1>
+      <p style="color:rgba(240,232,245,0.5);margin-top:6px;">{{ user.email }}</p>
+    </div>
+    <a href="{% url 'request_painting' %}" class="btn-primary">+ New Request</a>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="dash-stats">
+    <div class="dash-stat-card">
+      <span class="dash-stat-icon">📋</span>
+      <div>
+        <div class="dash-stat-num">{{ user_requests.count }}</div>
+        <div class="dash-stat-label">Total Requests</div>
+      </div>
+    </div>
+    <div class="dash-stat-card">
+      <span class="dash-stat-icon">⏳</span>
+      <div>
+        <div class="dash-stat-num">{{ pending_count }}</div>
+        <div class="dash-stat-label">Pending Review</div>
+      </div>
+    </div>
+    <div class="dash-stat-card">
+      <span class="dash-stat-icon">🖌️</span>
+      <div>
+        <div class="dash-stat-num">{{ in_progress_count }}</div>
+        <div class="dash-stat-label">In Progress</div>
+      </div>
+    </div>
+    <div class="dash-stat-card">
+      <span class="dash-stat-icon">✅</span>
+      <div>
+        <div class="dash-stat-num">{{ completed_count }}</div>
+        <div class="dash-stat-label">Completed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Requests Table -->
+  <div class="dash-section">
+    <div class="dash-section-header">
+      <h2>My Painting Requests</h2>
+      <a href="{% url 'request_painting' %}" class="btn-secondary" style="padding:10px 22px;font-size:0.88rem;">+ New Request</a>
+    </div>
+
+    {% if user_requests %}
+    <div class="requests-list">
+      {% for req in user_requests %}
+      <div class="request-card" onclick="window.location='{% url 'request_detail' req.pk %}'">
+        <div class="req-img">
+          {% if req.image %}
+            <img src="{{ req.image.url }}" alt="Reference"/>
+          {% else %}
+            <div class="req-img-placeholder">🎨</div>
+          {% endif %}
+        </div>
+        <div class="req-info">
+          <div class="req-top">
+            <h3>{{ req.description|truncatechars:60 }}</h3>
+            <span class="req-status-badge" style="background:{{ req.status_color }}">
+              {{ req.get_status_display }}
+            </span>
+          </div>
+          <div class="req-meta">
+            {% if req.preferred_style %}<span>🎨 {{ req.get_preferred_style_display }}</span>{% endif %}
+            {% if req.preferred_size %}<span>📐 {{ req.preferred_size }}</span>{% endif %}
+            {% if req.budget %}<span>💰 {{ req.budget }}</span>{% endif %}
+            <span>📅 {{ req.created_at|date:"d M Y" }}</span>
+          </div>
+        </div>
+        <div class="req-arrow">→</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">🖌️</div>
+      <h3>No Requests Yet</h3>
+      <p>Commission your first custom painting and bring your vision to life.</p>
+      <a href="{% url 'request_painting' %}" class="btn-primary" style="margin-top:20px;">Request a Custom Painting</a>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Quick Links -->
+  <div class="dash-section" style="margin-top:40px;">
+    <h2 style="margin-bottom:20px;">Quick Links</h2>
+    <div class="quick-links">
+      <a href="{% url 'gallery' %}" class="quick-link-card">
+        <span>🖼️</span>
+        <strong>Browse Gallery</strong>
+        <p>Explore all paintings</p>
+      </a>
+      <a href="{% url 'request_painting' %}" class="quick-link-card">
+        <span>🖌️</span>
+        <strong>Custom Request</strong>
+        <p>Commission new art</p>
+      </a>
+      <a href="{% url 'home' %}#contact" class="quick-link-card">
+        <span>📍</span>
+        <strong>Contact Us</strong>
+        <p>Get in touch</p>
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

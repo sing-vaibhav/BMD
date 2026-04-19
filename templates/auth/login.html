@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login – RangAura{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="splash splash-1" style="opacity:0.15;top:-50px;right:5%;"></div>
+  <div class="splash splash-2" style="opacity:0.1;bottom:5%;left:2%;"></div>
+
+  <div class="form-container">
+    <div class="form-header">
+      <div class="form-icon">🔐</div>
+      <h1>Welcome Back</h1>
+      <p>Login to your RangAura account to continue.</p>
+    </div>
+
+    <form method="POST" id="loginForm" novalidate>
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+          <div class="field-error">{{ form.username.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.password.id_for_label }}">Password</label>
+        <div class="password-wrap">
+          {{ form.password }}
+          <button type="button" class="toggle-pw" onclick="togglePw('id_password', this)">👁️</button>
+        </div>
+        {% if form.password.errors %}
+          <div class="field-error">{{ form.password.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      {% if form.non_field_errors %}
+      <div class="form-error-box">
+        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+      </div>
+      {% endif %}
+
+      <button type="submit" class="btn-primary btn-full" id="loginBtn">
+        <span class="btn-text">→ Login to RangAura</span>
+        <span class="btn-loading" style="display:none;">Logging in…</span>
+      </button>
+    </form>
+
+    <div class="form-switch">
+      Don't have an account? <a href="{% url 'register' %}">Register for free →</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePw(id, btn) {
+  const inp = document.getElementById(id);
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁️'; }
+}
+
+document.getElementById('loginForm').addEventListener('submit', function() {
+  const btn = document.getElementById('loginBtn');
+  btn.querySelector('.btn-text').style.display = 'none';
+  btn.querySelector('.btn-loading').style.display = 'inline';
+  btn.disabled = true;
+});
+</script>
+{% endblock %}

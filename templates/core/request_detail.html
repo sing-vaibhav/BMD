@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Request #{{ req.pk }} – RangAura{% endblock %}
+
+{% block content %}
+<div style="padding:110px 60px 80px;max-width:900px;margin:0 auto;">
+  <a href="{% url 'dashboard' %}" class="back-link">← Back to Dashboard</a>
+
+  <div class="detail-grid" style="margin-top:32px;">
+
+    <!-- Reference Image -->
+    <div class="detail-image-wrap">
+      {% if req.image %}
+        <img src="{{ req.image.url }}" alt="Reference Image" class="detail-image"/>
+      {% else %}
+        <div class="detail-emoji-placeholder">🎨</div>
+      {% endif %}
+      <span class="req-status-badge" style="background:{{ req.status_color }};display:inline-block;margin-top:16px;">
+        {{ req.get_status_display }}
+      </span>
+    </div>
+
+    <!-- Info -->
+    <div class="detail-info">
+      <span class="section-tag">Request #{{ req.pk }}</span>
+      <h1 class="detail-title" style="font-size:1.8rem;">{{ req.description|truncatechars:80 }}</h1>
+
+      <div class="req-detail-meta">
+        <div class="rdm-row"><span class="rdm-label">👤 Name</span><span>{{ req.name }}</span></div>
+        <div class="rdm-row"><span class="rdm-label">📧 Email</span><span>{{ req.email }}</span></div>
+        {% if req.phone %}<div class="rdm-row"><span class="rdm-label">📞 Phone</span><span>{{ req.phone }}</span></div>{% endif %}
+        <div class="rdm-row"><span class="rdm-label">📍 Address</span><span>{{ req.address }}</span></div>
+        {% if req.preferred_style %}<div class="rdm-row"><span class="rdm-label">🎨 Style</span><span>{{ req.get_preferred_style_display }}</span></div>{% endif %}
+        {% if req.preferred_size %}<div class="rdm-row"><span class="rdm-label">📐 Size</span><span>{{ req.preferred_size }}</span></div>{% endif %}
+        {% if req.budget %}<div class="rdm-row"><span class="rdm-label">💰 Budget</span><span>{{ req.budget }}</span></div>{% endif %}
+        <div class="rdm-row"><span class="rdm-label">📅 Submitted</span><span>{{ req.created_at|date:"d M Y, h:i A" }}</span></div>
+        <div class="rdm-row"><span class="rdm-label">🔄 Updated</span><span>{{ req.updated_at|date:"d M Y, h:i A" }}</span></div>
+      </div>
+
+      <div class="req-description-box">
+        <h4>🖌️ Your Vision</h4>
+        <p>{{ req.description }}</p>
+      </div>
+
+      {% if req.admin_notes %}
+      <div class="req-description-box" style="border-color:rgba(244,124,32,0.3);background:rgba(244,124,32,0.05);">
+        <h4>📝 Notes from Artist</h4>
+        <p>{{ req.admin_notes }}</p>
+      </div>
+      {% endif %}
+
+      <a href="{% url 'request_painting' %}" class="btn-secondary" style="margin-top:24px;display:inline-flex;">+ New Request</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

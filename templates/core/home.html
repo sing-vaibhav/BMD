@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}RangAura – Where Colors Find Their Home{% endblock %}
+
+{% block content %}
+
+<!-- ══ HERO ══════════════════════════════════════════════════ -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="splash splash-1"></div>
+  <div class="splash splash-2"></div>
+  <div class="splash splash-3"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge"><span></span> Digital Art Marketplace</div>
+    <h1>Where <em>Colors</em><br/>Find Their Home</h1>
+    <p>RangAura connects talented painters directly with art collectors, interior designers, and art lovers. Discover unique, 100% hand-drawn originals with certified authenticity.</p>
+    <div class="hero-btns">
+      <a href="{% url 'gallery' %}" class="btn-primary">🖼️ Explore Paintings</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'request_painting' %}" class="btn-secondary">🖌️ Request Custom Art →</a>
+      {% else %}
+        <a href="{% url 'register' %}" class="btn-secondary">Join RangAura →</a>
+      {% endif %}
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num">100%</span>
+        <span class="stat-label">Hand Drawn</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">{{ total_paintings }}+</span>
+        <span class="stat-label">Paintings</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">✓</span>
+        <span class="stat-label">Authenticated</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    {% for painting in gallery_items|slice:":4" %}
+    <a href="{% url 'painting_detail' painting.pk %}" class="painting-card" style="text-decoration:none;">
+      {% if painting.image %}
+        <img src="{{ painting.image.url }}" alt="{{ painting.title }}" style="width:100%;height:100%;object-fit:cover;border-radius:16px;"/>
+      {% else %}
+        <span>{{ painting.emoji }}</span>
+      {% endif %}
+      <div class="card-label">{{ painting.style_label }} · ₹{{ painting.price }}</div>
+    </a>
+    {% empty %}
+      <div class="painting-card"><span>🌸</span><div class="card-label">Fantasy Art</div></div>
+      <div class="painting-card"><span>🎵</span><div class="card-label">Digital Art</div></div>
+      <div class="painting-card"><span>🌿</span><div class="card-label">Modern Art</div></div>
+      <div class="painting-card"><span>⚡</span><div class="card-label">Abstract</div></div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ══ ABOUT ══════════════════════════════════════════════════ -->
+<section class="about" id="about">
+  <div class="about-text">
+    <span class="section-tag">Our Story</span>
+    <h2 class="section-title">Art Meets <em>Opportunity</em></h2>
+    <p class="section-sub">The name "Rang Aura" is derived from <strong style="color:var(--orange)">Rang</strong> (color) and <strong style="color:#d63384">Aura</strong> (unique energy). Together, we symbolize the emotional and artistic energy that colors bring to life.</p>
+    <br/>
+    <p class="section-sub">We bridge the gap between talented painters who struggle to find buyers and art collectors who seek authentic, original artwork — creating a trusted digital ecosystem where art meets opportunity.</p>
+    <br/>
+    <p class="section-sub" style="color:rgba(240,232,245,0.5);font-size:0.88rem;">📍 Maharashtra, Mumbai City, Vasai Panchavati (Right Side)</p>
+    <br/>
+    {% if not user.is_authenticated %}
+    <a href="{% url 'register' %}" class="btn-primary" style="display:inline-flex;margin-top:8px;">Join Free →</a>
+    {% endif %}
+  </div>
+  <div class="about-visual">
+    <div>
+      <div class="aura-badge">✦ Aura Value System</div>
+      <p style="font-size:0.82rem;color:rgba(240,232,245,0.5);margin-top:8px;">Our unique scoring system for each painting</p>
+    </div>
+    <div class="aura-value-demo">
+      <h4>⭐ PAINTING AURA SCORE</h4>
+      <div class="aura-bar">
+        <div class="aura-bar-label"><span>Artist Popularity</span><span>92%</span></div>
+        <div class="aura-bar-track"><div class="aura-bar-fill" style="width:92%"></div></div>
+      </div>
+      <div class="aura-bar">
+        <div class="aura-bar-label"><span>Uniqueness</span><span>88%</span></div>
+        <div class="aura-bar-track"><div class="aura-bar-fill" style="width:88%"></div></div>
+      </div>
+      <div class="aura-bar">
+        <div class="aura-bar-label"><span>Buyer Interest</span><span>79%</span></div>
+        <div class="aura-bar-track"><div class="aura-bar-fill" style="width:79%"></div></div>
+      </div>
+      <div class="aura-bar">
+        <div class="aura-bar-label"><span>Expert Review</span><span>95%</span></div>
+        <div class="aura-bar-track"><div class="aura-bar-fill" style="width:95%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ════════════════════════════════════════════════ -->
+<section class="features" id="features">
+  <div class="features-header">
+    <span class="section-tag">What We Offer</span>
+    <h2 class="section-title">Unique Features</h2>
+    <p class="section-sub">Everything you need to buy, sell, and celebrate art in one place.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">👤</div>
+      <h3>Artist Profiles</h3>
+      <p>Painters get personal portfolios with biography, style, and full artwork collections — helping buyers connect emotionally.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⭐</div>
+      <h3>Aura Value System</h3>
+      <p>Our proprietary score rates each painting on uniqueness, popularity, buyer interest, and expert reviews — like a credit score for art.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🏛️</div>
+      <h3>Virtual Gallery</h3>
+      <p>Explore paintings in an immersive 3D environment. See exactly how they'd look on your walls before purchasing.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📜</div>
+      <h3>Authenticity Certificate</h3>
+      <p>Every painting sold includes a digital certificate verifying it's 100% original — building trust between artists and collectors.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💬</div>
+      <h3>Direct Communication</h3>
+      <p>Chat directly with the artist. Learn the story behind the painting and build lasting relationships with creators.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎨</div>
+      <h3>Custom Painting Requests</h3>
+      <p>Want something personal? Commission a custom painting by theme, size, or color preference. Art made just for you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ═════════════════════════════════════════════ -->
+<section class="how" id="how">
+  <div class="how-inner">
+    <div class="how-header">
+      <span class="section-tag">The Process</span>
+      <h2 class="section-title">How RangAura Works</h2>
+      <p class="section-sub">Simple steps from discovery to your wall.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Browse &amp; Discover</h3>
+        <p>Explore hand-drawn paintings across Digital Art, Modern, Fantasy, and more styles.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Check the Aura Score</h3>
+        <p>Review each painting's unique Aura Value to understand its artistic and investment potential.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Connect &amp; Purchase</h3>
+        <p>Message the artist, ask questions, and buy securely through our trusted payment gateway.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h3>Receive &amp; Cherish</h3>
+        <p>Get your authentic painting delivered with a digital certificate of authenticity included.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ GALLERY PREVIEW ════════════════════════════════════════════ -->
+<section class="gallery" id="gallery">
+  <div class="gallery-header">
+    <span class="section-tag">Our Collection</span>
+    <h2 class="section-title">Explore the Gallery</h2>
+    <p class="section-sub">Digital Art, Modern, and Fantasy — hand-drawn with love and passion.</p>
+  </div>
+  <div class="gallery-grid">
+    {% for painting in gallery_items %}
+    <a href="{% url 'painting_detail' painting.pk %}" class="g-item" style="text-decoration:none;">
+      {% if painting.image %}
+        <img src="{{ painting.image.url }}" alt="{{ painting.title }}" style="width:100%;height:100%;object-fit:cover;"/>
+      {% else %}
+        {{ painting.emoji }}
+      {% endif %}
+      <div class="g-overlay">
+        <h4>{{ painting.title }}</h4>
+        <span>{{ painting.style_label }} · ₹{{ painting.price }}</span>
+      </div>
+    </a>
+    {% empty %}
+      <div class="g-item">🌸<div class="g-overlay"><h4>Mystic Goddess</h4><span>Fantasy Art · ₹6,500</span></div></div>
+      <div class="g-item">🎵<div class="g-overlay"><h4>Melody in Blue</h4><span>Digital Art · ₹3,800</span></div></div>
+      <div class="g-item">🌿<div class="g-overlay"><h4>Nature's Spirit</h4><span>Modern Art · ₹2,900</span></div></div>
+      <div class="g-item">⚡<div class="g-overlay"><h4>Storm Warrior</h4><span>Fantasy Art · ₹5,200</span></div></div>
+      <div class="g-item">🌊<div class="g-overlay"><h4>Ocean Dreams</h4><span>Modern Art · ₹3,100</span></div></div>
+      <div class="g-item">🦋<div class="g-overlay"><h4>Transformation</h4><span>Digital Art · ₹4,400</span></div></div>
+    {% endfor %}
+  </div>
+  <div style="text-align:center;margin-top:40px;">
+    <a href="{% url 'gallery' %}" class="btn-primary">View Full Gallery →</a>
+  </div>
+</section>
+
+<!-- ══ AUDIENCE ════════════════════════════════════════════════ -->
+<section class="audience" id="audience">
+  <div class="audience-inner">
+    <div class="audience-header">
+      <span class="section-tag">Who It's For</span>
+      <h2 class="section-title">Built for Both Sides of Art</h2>
+      <p class="section-sub">Whether you create or collect, RangAura is your home.</p>
+    </div>
+    <div class="audience-cols">
+      <div class="audience-card artists">
+        <h3>🎨 For Artists</h3>
+        <div class="sub">Painters, Emerging Artists, Freelancers, Art Students</div>
+        <ul class="benefit-list">
+          <li>Global exposure for your artwork</li>
+          <li>Direct income — no middlemen</li>
+          <li>Build your brand with a personal profile</li>
+          <li>Accept custom painting commissions</li>
+          <li>Premium membership for featured listings</li>
+          <li>Recognition and a growing collector base</li>
+        </ul>
+      </div>
+      <div class="audience-card buyers">
+        <h3>🏛️ For Collectors</h3>
+        <div class="sub">Wealthy Individuals, Interior Designers, Corporate Offices, Hotels</div>
+        <ul class="benefit-list">
+          <li>Access verified, 100% authentic paintings</li>
+          <li>Aura Value scores guide investment decisions</li>
+          <li>Direct communication with the artist</li>
+          <li>Safe &amp; secure payment processing</li>
+          <li>Fast delivery across Maharashtra</li>
+          <li>Commission personalized, one-of-a-kind art</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BUSINESS MODEL ══════════════════════════════════════════ -->
+<section class="model" id="model">
+  <div class="model-header">
+    <span class="section-tag">Revenue Model</span>
+    <h2 class="section-title">How We Sustain</h2>
+    <p class="section-sub">A transparent model that keeps artists at the center.</p>
+  </div>
+  <div class="model-grid">
+    <div class="model-card">
+      <span class="model-icon">💰</span>
+      <h4>Sales Commission</h4>
+      <p>10–15% commission on every painting sold through the platform.</p>
+    </div>
+    <div class="model-card">
+      <span class="model-icon">⭐</span>
+      <h4>Premium Membership</h4>
+      <p>Artists subscribe for featured listings, homepage promotion &amp; more visibility.</p>
+    </div>
+    <div class="model-card">
+      <span class="model-icon">📣</span>
+      <h4>Featured Promotions</h4>
+      <p>Boost individual paintings for greater exposure to serious buyers.</p>
+    </div>
+    <div class="model-card">
+      <span class="model-icon">🤝</span>
+      <h4>Corporate Partnerships</h4>
+      <p>Bulk supply of artwork to hotels, offices &amp; luxury interior spaces.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA / CONTACT ══════════════════════════════════════════ -->
+<section class="cta" id="contact">
+  <div class="cta-inner">
+    <span class="section-tag">Get In Touch</span>
+    <h2>Ready to <em>Start Your</em><br/>Art Journey?</h2>
+    <p>Visit our gallery in Maharashtra, or reach out to Karan Rana &amp; Shubham Lawate to discover, buy, or commission your perfect painting today.</p>
+    <div class="cta-contact">
+      <div class="contact-item">
+        <span class="icon">📍</span>
+        <span>Vasai Panchavati, Mumbai City, Maharashtra</span>
+      </div>
+      <div class="contact-item">
+        <span class="icon">🎨</span>
+        <span>Karan Rana · Shubham Lawate</span>
+      </div>
+      <div class="contact-item">
+        <span class="icon">✅</span>
+        <span>Safe &amp; Secure Payments</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <a href="{% url 'gallery' %}" class="btn-primary" style="font-size:1.05rem;padding:18px 48px;">🖼️ Browse All Paintings</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'request_painting' %}" class="btn-secondary" style="padding:18px 36px;">🖌️ Request Custom Art</a>
+      {% else %}
+        <a href="{% url 'register' %}" class="btn-secondary" style="padding:18px 36px;">Join Free →</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% endblock %}
