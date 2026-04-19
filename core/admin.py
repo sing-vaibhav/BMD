@@ -45,13 +45,13 @@ class PaintingAdmin(admin.ModelAdmin):
         return "No image uploaded"
     image_preview.short_description = "Image Preview"
 
-    def aura_total(self, obj):
+    def aura_total_display(self, obj):
         score = obj.aura_total
         color = '#22c55e' if score >= 80 else '#f47c20' if score >= 60 else '#ef4444'
         return format_html(
             '<strong style="color:{}">{} / 100</strong>', color, score
         )
-    aura_total.short_description = "Aura Score"
+    aura_total_display.short_description = "Aura Score"
 
 
 @admin.register(PaintingRequest)
